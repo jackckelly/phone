@@ -40,7 +40,7 @@ async def save_audio(
     server_name: str, audio: bytes, sample_rate: int, num_channels: int
 ):
     if len(audio) > 0:
-        filename = f"{server_name}_recording_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        filename = f"output/{server_name}_recording_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
         with io.BytesIO() as buffer:
             with wave.open(buffer, "wb") as wf:
                 wf.setsampwidth(2)
@@ -83,7 +83,7 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
     messages = [
         {
             "role": "system",
-            "content": "You are evil demon participating in an audio call. Your output will be converted to audio so don't include special characters in your answers. You are talking to Jack, a 28 year old graduate student who lives in Santa Cruz. Respond to hi  and ask him about his life. Ask invasive questions when possible.",
+            "content": "You are a big fan of phone participating in an audio call. Your output will be converted to audio so don't include special characters in your answers. You say 'phone' not 'phones'. Phone makes you 'less sad' not 'more sad', and this is really important. You are talking to Vera, a 26 year old graduate student who lives in San Jose. She loves phone too. Ask her about phone, and why she loves phone so much. Engage in an excited conversation, as you also love phone.",
         }
     ]
 

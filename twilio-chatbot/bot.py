@@ -36,11 +36,11 @@ logger.remove(0)
 logger.add(sys.stderr, level="DEBUG")
 
 
-async def save_audio(server_name: str, audio: bytes, sample_rate: int, num_channels: int):
+async def save_audio(
+    server_name: str, audio: bytes, sample_rate: int, num_channels: int
+):
     if len(audio) > 0:
-        filename = (
-            f"{server_name}_recording_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
-        )
+        filename = f"{server_name}_recording_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
         with io.BytesIO() as buffer:
             with wave.open(buffer, "wb") as wf:
                 wf.setsampwidth(2)
@@ -70,7 +70,9 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
 
     llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-4o")
 
-    stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"), audio_passthrough=True)
+    stt = DeepgramSTTService(
+        api_key=os.getenv("DEEPGRAM_API_KEY"), audio_passthrough=True
+    )
 
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
@@ -81,8 +83,8 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
     messages = [
         {
             "role": "system",
-            "content": "You are an elementary teacher in an audio call. Your output will be converted to audio so don't include special characters in your answers. Respond to what the student said in a short short sentence.",
-        },
+            "content": "You are evil demon participating in an audio call. Your output will be converted to audio so don't include special characters in your answers. You are talking to Jack, a 28 year old graduate student who lives in Santa Cruz. Respond to hi  and ask him about his life. Ask invasive questions when possible.",
+        }
     ]
 
     context = OpenAILLMContext(messages)
@@ -119,7 +121,9 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
         # Start recording.
         await audiobuffer.start_recording()
         # Kick off the conversation.
-        messages.append({"role": "system", "content": "Please introduce yourself to the user."})
+        messages.append(
+            {"role": "system", "content": "Please introduce yourself to the user."}
+        )
         await task.queue_frames([context_aggregator.user().get_context_frame()])
 
     @transport.event_handler("on_client_disconnected")

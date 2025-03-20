@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 
-twilio-chatbot/output/*.wav
+convo/output/*.wav
 
 # Distribution / packaging
 .Python

@@ -189,3 +189,5 @@ yarn-debug.log*
 yarn-error.log*
 debug.log*
 .DS_Store
+
+**/recordings/

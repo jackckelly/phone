@@ -1,0 +1,11 @@
+jupyter
+elevenlabs
+deepgram-sdk
+python-dotenv
+yaml
+twilio
+pipecat-ai[cartesia,openai,silero,deepgram,elevenlabs]
+fastapi
+uvicorn
+loguru
+

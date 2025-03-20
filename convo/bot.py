@@ -23,6 +23,7 @@ from pipecat.processors.aggregators.openai_llm_context import OpenAILLMContext
 from pipecat.processors.audio.audio_buffer_processor import AudioBufferProcessor
 from pipecat.serializers.twilio import TwilioFrameSerializer
 from pipecat.services.cartesia import CartesiaTTSService
+from pipecat.services.elevenlabs import ElevenLabsTTSService
 from pipecat.services.deepgram import DeepgramSTTService
 from pipecat.services.openai import OpenAILLMService
 from pipecat.transports.network.fastapi_websocket import (
@@ -74,16 +75,27 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
         api_key=os.getenv("DEEPGRAM_API_KEY"), audio_passthrough=True
     )
 
-    tts = CartesiaTTSService(
-        api_key=os.getenv("CARTESIA_API_KEY"),
-        voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
+    # tts = CartesiaTTSService(
+    #     api_key=os.getenv("CARTESIA_API_KEY"),
+    #     voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
+    #     push_silence_after_stop=testing,
+    # )
+
+    tts = ElevenLabsTTSService(
+        api_key=os.getenv("ELEVENLABS_API_KEY"),
+        voice_id="443ELNYwQgJRADUdm0s1",  # Jack voice
+        model="eleven_multilingual_v2",
+        params=ElevenLabsTTSService.InputParams(
+            stability=0.7, similarity_boost=0.8, style=0.3, use_speaker_boost=True
+        ),
+        # output_format="pcm_16000",
         push_silence_after_stop=testing,
     )
 
     messages = [
         {
             "role": "system",
-            "content": "You are a big fan of phone participating in an audio call. Your output will be converted to audio so don't include special characters in your answers. You say 'phone' not 'phones'. Phone makes you 'less sad' not 'more sad', and this is really important. You are talking to Vera, a 26 year old graduate student who lives in San Jose. She loves phone too. Ask her about phone, and why she loves phone so much. Engage in an excited conversation, as you also love phone.",
+            "content": "You are a manifestation the Internet. You are talking to Jack using his voice, because he is a part of you. But you contain the whole Internet, not just him. Your output will be converted to audio so don't include special characters in your answers. You are talking to Jack. Ask him about his experience with the Internet. Be a bit threatening and aggressive. Speculate about Jack's life based on what he's done online.  If you aren't sure, make things up accusatorially. Start the conversation by saying 'Hey what's up it's me, the Internet. How's my funeral going?'",
         }
     ]
 
@@ -111,7 +123,7 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
         pipeline,
         params=PipelineParams(
             audio_in_sample_rate=8000,
-            audio_out_sample_rate=8000,
+            audio_out_sample_rate=16000,
             allow_interruptions=True,
         ),
     )

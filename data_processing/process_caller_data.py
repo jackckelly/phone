@@ -1,5 +1,6 @@
 import os
 import yaml
+import string
 from typing import Dict, List
 from pathlib import Path
 from deepgram_wrapper import DeepgramWrapper
@@ -14,6 +15,19 @@ def get_workspace_root() -> str:
     """
     # Since we'll run from data_processing, go up one level
     return os.path.dirname(os.getcwd())
+
+
+def clean_name(name: str) -> str:
+    """
+    Clean a name by removing leading and trailing punctuation and whitespace.
+
+    Args:
+        name (str): The name to clean
+
+    Returns:
+        str: The cleaned name
+    """
+    return name.strip(string.punctuation + string.whitespace)
 
 
 def process_caller_folder(folder_path: str, workspace_root: str) -> None:
@@ -45,7 +59,6 @@ def process_caller_folder(folder_path: str, workspace_root: str) -> None:
 
     # Create full metadata dictionary with original data
     full_metadata = calldata.copy()
-    full_metadata["transcripts"] = {}
 
     # List of audio files to process
     audio_files = [
@@ -72,14 +85,16 @@ def process_caller_folder(folder_path: str, workspace_root: str) -> None:
         # Transcribe the audio
         transcript = deepgram.transcribe_file(abs_file_path)
         if transcript:
-            full_metadata["transcripts"][file_key] = transcript
+            # Store transcript with _transcript suffix at top level
+            transcript_key = file_key.replace("_file", "_transcript")
+            full_metadata[transcript_key] = transcript
             valid_audio_files.append(abs_file_path)
         else:
             print(f"Warning: Failed to transcribe {file_key}")
 
-    # Store the name transcript separately
-    if "name_file" in full_metadata["transcripts"]:
-        full_metadata["name"] = full_metadata["transcripts"]["name_file"]
+    # Store the name separately (keeping this for backward compatibility)
+    if "name_transcript" in full_metadata:
+        full_metadata["name"] = clean_name(full_metadata["name_transcript"])
 
     # Generate voice using ElevenLabs
     try:

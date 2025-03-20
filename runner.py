@@ -73,7 +73,7 @@ def start_ngrok(port, url):
 def start_voicemail_server():
     # Change to voicemail directory and start the server
     os.chdir("voicemail")
-    return run_command("npm start", new_window=True)
+    return run_command("node app.js", new_window=True)
 
 
 def process_caller_data():
@@ -83,7 +83,7 @@ def process_caller_data():
     print(f"\nCurrent directory before process_caller_data: {os.getcwd()}")
     print(f"Changing to root directory: {root_dir}")
     # Change back to root directory
-    os.chdir(root_dir)
+    os.chdir(root_dir + "/data_processing")
     print(f"Current directory after change: {os.getcwd()}")
     print(f"Looking for script at: {script_path}")
     print(f"Script exists: {os.path.exists(script_path)}")
@@ -127,6 +127,7 @@ def get_available_numbers():
             print(f"\nReading metadata file: {metadata_file}")
             with open(metadata_file, "r") as f:
                 metadata = yaml.safe_load(f)
+                print(f"Metadata: {metadata}")
                 if metadata and "number" in metadata and "name" in metadata:
                     numbers.append(
                         {
@@ -137,9 +138,7 @@ def get_available_numbers():
                     )
                     print(f"Successfully loaded number for: {metadata['name']}")
                 else:
-                    print(
-                        "Metadata file missing required fields (phone_number or name)"
-                    )
+                    print("Metadata file missing required fields (number or name)")
         except Exception as e:
             print(f"Error reading {metadata_file}: {e}")
 

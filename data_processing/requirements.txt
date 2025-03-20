@@ -1,2 +1,4 @@
 jupyter
 elevenlabs
+deepgram-sdk
+python-dotenv

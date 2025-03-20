@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     # Initiate an outbound call
     call = client.calls.create(
-        to="+18609188146",  # Recipient's phone number
+        to="+1860918816",  # Recipient's phone number
         from_="+18317132074",  # Your Twilio phone number
         url="https://splendid-working-stallion.ngrok-free.app",  # URL for TwiML instructions
     )

@@ -6,6 +6,7 @@
 
 import argparse
 import json
+import yaml
 
 import uvicorn
 from bot import run_bot
@@ -27,7 +28,9 @@ app.add_middleware(
 @app.post("/")
 async def start_call():
     print("POST TwiML")
-    return HTMLResponse(content=open("templates/streams.xml").read(), media_type="application/xml")
+    return HTMLResponse(
+        content=open("templates/streams.xml").read(), media_type="application/xml"
+    )
 
 
 @app.websocket("/ws")
@@ -39,16 +42,28 @@ async def websocket_endpoint(websocket: WebSocket):
     print(call_data, flush=True)
     stream_sid = call_data["start"]["streamSid"]
     print("WebSocket connection accepted")
-    await run_bot(websocket, stream_sid, app.state.testing)
+    await run_bot(websocket, stream_sid, app.state.testing, app.state.phone_number)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipecat Twilio Chatbot Server")
     parser.add_argument(
-        "-t", "--test", action="store_true", default=False, help="set the server in testing mode"
+        "-t",
+        "--test",
+        action="store_true",
+        default=False,
+        help="set the server in testing mode",
+    )
+    parser.add_argument(
+        "-n",
+        "--number",
+        type=str,
+        required=True,
+        help="phone number to load profile for",
     )
     args, _ = parser.parse_known_args()
 
     app.state.testing = args.test
+    app.state.phone_number = args.number
 
     uvicorn.run(app, host="0.0.0.0", port=8765)

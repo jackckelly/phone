@@ -10,6 +10,8 @@ import os
 import sys
 import wave
 
+from pathlib import Path
+import yaml
 import aiofiles
 from dotenv import load_dotenv
 from fastapi import WebSocket
@@ -202,7 +204,30 @@ async def save_audio(
         logger.info("No audio data to save")
 
 
-async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
+def load_profile_from_number(phone_number: str) -> CallProfile:
+    metadata_path = Path("../data") / phone_number / "full_metadata.yaml"
+    if not metadata_path.exists():
+        raise ValueError(f"No metadata found for phone number {phone_number}")
+
+    with open(metadata_path) as f:
+        metadata = yaml.safe_load(f)
+
+    return CallProfile(
+        name=metadata["name"],
+        voice_id=metadata["voice_id"],
+        earliest_memory=metadata["memory_transcript"],
+        favorite_thing=metadata["like_transcript"],
+        least_favorite_thing=metadata["hate_transcript"],
+        one_thing_youd_say=metadata["message_transcript"],
+    )
+
+
+async def run_bot(
+    websocket_client: WebSocket, stream_sid: str, testing: bool, phone_number: str
+):
+
+    profile = load_profile_from_number(phone_number)
+
     transport = FastAPIWebsocketTransport(
         websocket=websocket_client,
         params=FastAPIWebsocketParams(
@@ -222,29 +247,15 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
         api_key=os.getenv("DEEPGRAM_API_KEY"), audio_passthrough=True
     )
 
-    # tts = CartesiaTTSService(
-    #     api_key=os.getenv("CARTESIA_API_KEY"),
-    #     voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
-    #     push_silence_after_stop=testing,
-    # )
-
     tts = ElevenLabsTTSService(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
-        voice_id="443ELNYwQgJRADUdm0s1",  # Jack voice
+        voice_id=profile.voice_id,  # Use the profile's voice ID
         model="eleven_multilingual_v2",
         params=ElevenLabsTTSService.InputParams(
             stability=0.7, similarity_boost=0.8, style=0.3, use_speaker_boost=True
         ),
-        # output_format="pcm_16000",
         push_silence_after_stop=testing,
     )
-
-    # messages = [
-    #     {
-    #         "role": "system",
-    #         "content": "You are a manifestation the Internet. You are talking to Jack using his voice, because he is a part of you. But you contain the whole Internet, not just him. Your output will be converted to audio so don't include special characters in your answers. You are talking to Jack. Ask him about his experience with the Internet. Be a bit threatening and aggressive. Speculate about Jack's life based on what he's done online.  If you aren't sure, make things up accusatorially. Start the conversation by saying 'Hey what's up it's me, the Internet. How's my funeral going?'",
-    #     }
-    # ]
 
     context = OpenAILLMContext()
     context_aggregator = llm.create_context_aggregator(context)
@@ -255,8 +266,8 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
 
     pipeline = Pipeline(
         [
-            transport.input(),  # Websocket input from client
-            stt,  # Speech-To-Text
+            transport.input(),
+            stt,
             context_aggregator.user(),
             llm,  # LLM
             tts,  # Text-To-Speech
@@ -280,7 +291,7 @@ async def run_bot(websocket_client: WebSocket, stream_sid: str, testing: bool):
         task=task,
         llm=llm,
         context_aggregator=context_aggregator,
-        flow_config=get_flow_config(dummy),
+        flow_config=get_flow_config(profile),  # Use the provided profile
     )
 
     @transport.event_handler("on_client_connected")

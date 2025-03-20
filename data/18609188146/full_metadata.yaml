@@ -1,24 +1,18 @@
-hate_file: data/18609188146/files/jack.wav
-hate_transcript: I'm just testing out, leaving a message, that's longer than, like,
-  a really short message. So this is my hopefully normal ish voice, leaving a normal
-  ish message that is of appropriate links for voice cloning. Let's see how this goes.
-  Let's do it.
-like_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_relationship_2025-03-20T09-18-47-550Z.wav
-like_transcript: Well, I I use the Internet. You know, the Internet's the Internet's
-  it's all around me, I guess. I you know, it's it's good. I I I'm using it right
-  now, I guess, but I mean, it's dead. That's that's a bummer.
-memory_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_memory_2025-03-20T09-19-26-769Z.wav
-memory_transcript: I don't know. I guess my favorite memory is just, like, maybe as
-  a kid. You know, I was a I was a big I I didn't all my all my friends didn't know
-  how the Internet works, but I did. So I could figure out I could tell them what
-  games are gonna come out sooner than everyone else, and that got me, like, tons
-  of clout, and I've never gotten that high again. So it was an early win from the
-  the Internet, and I I don't think I've gotten past that.
-message_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_message_2025-03-20T09-19-45-120Z.wav
-message_transcript: I'm I'm sorry. I I didn't use I didn't spend the time with you.
-  You know? It's it's a bummer. I always spend more time on phone. So
+hate_file: data/18609188146/hate.wav
+hate_transcript: You know, I I usually get anxious because I I spend too much time
+  on, like, Twitter, and there's, like, all these news and shit. And it's, like, very
+  anxiety inducing, especially with all the politics and shit.
+like_file: data/18609188146/like.wav
+like_transcript: Enjoyed, just being able to kill time, and not really think about
+  all the things that are stressing me
+memory_file: data/18609188146/memory.wav
+memory_transcript: You know, I I and I'd say my favorite memory is I don't know. Something
+  about just, like, watching too much Netflix. Watching yeah. Binge watching, like,
+  all of Lost, like, every other fucking year for the last ten years.
+message_file: data/18609188146/message.wav
+message_transcript: I'm I'm good. Hope you are too.
 name: Jack
-name_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_name_2025-03-20T09-18-30-451Z.wav
+name_file: data/18609188146/name.wav
 name_transcript: Jack.
-number: 18609188146
-voice_id: VyuYJFCfocu02vPZn9P5
+number: '18609188146'
+voice_id: wcoJQYuVnVA46RKZIvGl

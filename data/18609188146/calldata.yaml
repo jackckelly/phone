@@ -1,6 +1,6 @@
-number: 18609188146
-name_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_name_2025-03-20T09-18-30-451Z.wav
-memory_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_memory_2025-03-20T09-19-26-769Z.wav
-like_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_relationship_2025-03-20T09-18-47-550Z.wav
-hate_file: data/18609188146/files/jack.wav
-message_file: data/18609188146/files/CA886e65f643ede98f27d65bc358085da2_message_2025-03-20T09-19-45-120Z.wav
+number: '18609188146'
+name_file: data/18609188146/name.wav
+memory_file: data/18609188146/memory.wav
+like_file: data/18609188146/like.wav
+hate_file: data/18609188146/hate.wav
+message_file: data/18609188146/message.wav

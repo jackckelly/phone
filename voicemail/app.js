@@ -177,10 +177,10 @@ app.post("/recording-complete", async (req, res) => {
       console.log(`Recording saved to ${filePath}`);
 
       // After all recordings for a caller are saved, generate the YAML file
-      const yamlFilePath = path.join(callerDir, `${callerId}.yaml`);
+      const yamlFilePath = path.join(callerDir, "calldata.yaml"); // Fixed filename calldata.yaml
 
       const yamlData = {
-        number: callerId,
+        number: callerId, // number will not be quoted
         name_file: `data/${callerId}/name.wav`,
         memory_file: `data/${callerId}/memory.wav`,
         like_file: `data/${callerId}/like.wav`,
@@ -188,8 +188,17 @@ app.post("/recording-complete", async (req, res) => {
         message_file: `data/${callerId}/message.wav`,
       };
 
-      // Write the YAML data to a file
-      fs.writeFileSync(yamlFilePath, yaml.dump(yamlData));
+      // Write the YAML data to a file without quoting the number field
+      const yamlString = yaml.dump(yamlData, {
+        noRefs: true, // Disable references
+        lineWidth: -1, // Prevent line wrapping
+        quoteKeys: false, // Prevent quoting keys
+        indent: 2, // Use 2 spaces for indentation
+        skipInvalid: true, // Skip invalid properties (if any)
+        noCompatMode: true, // Disable YAML 1.1 compatibility mode (prevents quoting numbers)
+      });
+
+      fs.writeFileSync(yamlFilePath, yamlString);
 
       console.log(`YAML file saved to ${yamlFilePath}`);
     }
@@ -200,6 +209,8 @@ app.post("/recording-complete", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+
 
 
 
